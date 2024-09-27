@@ -15,8 +15,8 @@ app.whenReady().then(() => {
 
 	mainWindow = new BrowserWindow({
 		title: 'Quick Project',
-		width: 800,
-		height: 600,
+		width: 2000,
+		height: 1000,
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
@@ -26,7 +26,6 @@ app.whenReady().then(() => {
 	})
 
 	let root = process.env.QUICK_PROJECT_UI_ROOT
-	console.log(root)
 	if (typeof root !== 'string' || root.trim().length === 0) {
 		mainWindow.loadFile('./html/index.html')
 	}
@@ -41,28 +40,18 @@ app.whenReady().then(() => {
 				submenu: [
 					{
 						label: 'Reload',
-						accelerator: 'F5',
 						click: () => {
 							mainWindow.reload()
 						},
 					},
 					{
 						label: 'Toggle Full Screen',
-						accelerator: 'F11',
 						click: () => {
 							mainWindow.setFullScreen(!mainWindow.isFullScreen())
 						},
 					},
 					{
-						label: 'Toggle Menu',
-						accelerator: 'F1',
-						click: () => {
-							mainWindow.setMenuBarVisibility(!mainWindow.isMenuBarVisible())
-						},
-					},
-					{
 						label: 'Developer Tools',
-						accelerator: 'F12',
 						click: () => {
 							if (mainWindow.webContents.isDevToolsOpened()) {
 								mainWindow.webContents.closeDevTools()
@@ -71,11 +60,18 @@ app.whenReady().then(() => {
 							}
 						},
 					},
+					{
+						label: 'Close Menu',
+						accelerator: 'Ctrl+Alt+F1',
+						click: () => {
+							mainWindow.setMenuBarVisibility(!mainWindow.isMenuBarVisible())
+						},
+					},
 				],
 			},
 		])
 	)
-	mainWindow.setMenuBarVisibility(true)
+	mainWindow.setMenuBarVisibility(false)
 
 	mainWindow.on('closed', () => {
 		mainWindow = null
