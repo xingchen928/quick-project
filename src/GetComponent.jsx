@@ -1,11 +1,15 @@
 import SimpleCommand from './component/SimpleCommand'
 import SimpleList from './component/SimpleList'
 import RootList from './component/RootList'
+import LogDisplay from './component/LogDisplay'
+import MainConfigReload from './component/MainConfigReload'
 
 const ComponentMap = {
-  'root-list': RootList,
-  'simple-list': SimpleList,
-  'simple-command': SimpleCommand,
+  'RootList': RootList,
+  'SimpleList': SimpleList,
+  'SimpleCommand': SimpleCommand,
+  'LogDisplay': LogDisplay,
+  'MainConfigReload': MainConfigReload,
 };
 
 export default function App({ data, global }) {

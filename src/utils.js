@@ -34,7 +34,19 @@ export function log_error(msg) {
   log_line(`[error] ${msg}`)
 }
 
-export function runCommand(command, filename) {
+function execAsync(command) {
+  return new Promise((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      }
+      resolve();
+    });
+  });
+}
+
+
+export async function runCommand(command, filename) {
   const now = new Date()
   const year = now.getFullYear()
   const month = String(now.getMonth() + 1).padStart(2, '0')
@@ -46,11 +58,11 @@ export function runCommand(command, filename) {
   log_exec(command)
 
   if (!filename) {
-    exec(command, () => undefined)
+    await execAsync(command)
     return
   } else {
     fs.appendFileSync(filename, `\n\n\n${year}-${month}-${day} ${hours}-${minutes}-${seconds} ${command}\n`)
-    exec(command + ` 2>&1 >> "${filename}"`, () => undefined)
+    await execAsync(command + ` 2>&1 >> "${filename}"`)
   }
 }
 

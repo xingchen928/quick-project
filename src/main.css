@@ -1,0 +1,9 @@
+.commandButton {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 8px 16px;
+  margin-right: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+  outline: none;
+}

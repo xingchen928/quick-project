@@ -1,26 +1,54 @@
-import { log_info, getCommandLogPath, runCommand } from '../utils'
+import { useEffect, useState } from 'react'
+import { log_info, getCommandLogPath, runCommand, log_error } from '../utils'
+import GetComponent from '../GetComponent'
 
-const styles = {
-  commandButton: {
-    backgroundColor: '#f0f0f0',
-    border: 'none',
-    padding: '8px 16px',
-    marginRight: '5px',
-    cursor: 'pointer',
-    borderRadius: '4px',
-    outline: 'none' // 移除点击时的轮廓线  
-  },
+function StatusDisplay({ status }) {
+  let color;
+  if (status === '运行成功') {
+    color = 'green';
+  } else {
+    color = 'red';
+  }
+
+  return (
+    <span style={{ marginRight: '10px', color: color }}>{status}</span>
+  );
 }
 
 export default function App({ data, global }) {
+  const [status, setStatus] = useState('运行成功')
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [logname, setLogname] = useState()
+
+  useEffect(() => {
+    if (data) {
+      setLogname(getCommandLogPath(data.parent.name, data.name));
+    }
+  }, [data]);
+
   return (
-    <button key={data.name} style={styles.commandButton} onClick={() => {
-      log_info(`click button ${data.parent.name} ${data.name}`)
-      const filename = getCommandLogPath(data.parent.name, data.name)
-      runCommand(data.command, filename)
-      global.setLog(filename)
-    }}>
-      {data.name}
-    </button>
+    <>
+      <div>
+        <span style={{ marginRight: '10px' }}>{data.name}</span>
+        <StatusDisplay status={status} />
+        <button className="commandButton" onClick={() => {
+          log_info(`click button ${data.parent.name} ${data.name}`)
+          runCommand(data.command, logname)
+            .then(() => {
+              setStatus('运行成功')
+            })
+            .catch(error => {
+              setStatus('运行失败')
+              log_error('Command failed:', error)
+            })
+        }}>运行</button>
+        <button className="commandButton" onClick={() => {
+          setIsExpanded(!isExpanded);
+        }}>日志</button>
+      </div>
+      {isExpanded && <div style={{ marginTop: '10px' }}>
+        <GetComponent data={{ logname: logname, template: "LogDisplay" }} global={global} />
+      </div>}
+    </>
   )
 }
